@@ -52,8 +52,31 @@
                 $('#table1').DataTable( {
             dom: 'lBfrtip',
             buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-            ]
+            'copy',
+            {
+            extend :'csv',
+            filename: 'Pending Tests {{sel_project}}'
+            },
+            {
+                extend: 'excel',
+                filename: 'Pending Tests {{sel_project}}',
+                title: 'Pending Tests {{sel_project}}',
+                messageTop: null,
+                
+            },
+            {
+                extend: 'pdf',
+                filename: 'Pending Tests {{sel_project}}',
+                title: 'Pending Tests {{sel_project}}',
+                messageBottom: null
+            },
+            {
+                extend: 'print',
+                title: 'Pending Tests {{sel_project}}',
+                messageTop: null,
+                messageBottom: null
+            }
+        ]
         } );
                 //for more customizations
                 // $('#table1').DataTable({

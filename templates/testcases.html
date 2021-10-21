@@ -107,7 +107,30 @@
         dom: 'lBfrtip',
 
         buttons: [
-            'copy', 'csv', 'excel', 'pdf' , 'print'
+            'copy',
+            {
+            extend :'csv',
+            filename: 'Testcases'
+            },
+            {
+                extend: 'excel',
+                filename: 'Test Cases',
+                title: 'Test Cases',
+                messageTop: null,
+                
+            },
+            {
+                extend: 'pdf',
+                filename: 'Test Cases',
+                title: 'Test Cases',
+                messageBottom: null
+            },
+            {
+                extend: 'print',
+                title: 'Test Cases',
+                messageTop: null,
+                messageBottom: null
+            }
         ]
     } );
             //for more customizations

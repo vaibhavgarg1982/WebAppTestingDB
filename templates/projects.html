@@ -36,7 +36,30 @@
             $('#table1').DataTable( {
         dom: 'lBfrtip',
         buttons: [
-        'copy', 'csv', 'excel', 'pdf', 'print'
+            'copy',
+            {
+            extend :'csv',
+            filename: 'Projects'
+            },
+            {
+                extend: 'excel',
+                filename: 'Projects',
+                title: 'Projects',
+                messageTop: null,
+                
+            },
+            {
+                extend: 'pdf',
+                filename: 'Projects',
+                title: 'Projects',
+                messageBottom: null
+            },
+            {
+                extend: 'print',
+                title: 'Projects',
+                messageTop: null,
+                messageBottom: null
+            }
         ]
     } );
             //for more customizations
