@@ -86,11 +86,19 @@ def projects():
         name = request.form["ProjectName"]
         description = request.form["ProjectDescription"]
         if len(name) > 0 and len(description) > 0:
-            c.execute(
-                "INSERT INTO Mst_projects (name, description) VALUES(:name, :description)",
-                {"name": name, "description": description},
-            )
-            conn.commit()
+            # get list of all project names
+            proj_names = [row[0] for row in c.execute("SELECT name FROM Mst_projects")]
+            print(proj_names)
+            if name not in proj_names:
+                c.execute(
+                    "INSERT INTO Mst_projects (name, description) VALUES(:name, :description)",
+                    {"name": name, "description": description},
+                )
+                conn.commit()
+            else:
+                conn.close()
+                return render_template("undercon.html", msg = "Project Name already exists, press back and try again")
+                # return "Project already exists, press back to return to the projects page and retry"
         else:
             conn.close()
             return "Project name and description cannot be empty"
@@ -138,7 +146,10 @@ def testcases():
             conn.commit()
         else:
             conn.close()
-            return "Testcase name, test category, description, steps, expected result or automated cannot be empty"
+            return render_template("undercon.html", 
+                msg = "Testcase name, test category, description, steps, expected result or automated cannot be empty"
+                )
+            # return "Testcase name, test category, description, steps, expected result or automated cannot be empty"
         pass
 
     query = "SELECT * FROM Mst_testcases"
