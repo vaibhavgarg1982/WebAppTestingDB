@@ -26,10 +26,10 @@
                 <tr>
                     <th style="width: 5%">Category </th>
                     <th style="width: 10%">Name<br>Description<br>Expected Result</th>
-                    <th style="width: 25%">Result Description</th>
+                    <th style="width: 20%">Result Description</th>
                     <th style="width: 10%">Config Info</th>
                     <th style="width: 15%">Tester</th>
-                    <th style="width: 10%">When Executed</th>
+                    <th style="width: 15%">When Executed</th>
                     <th style="width: 5%">Pass_fail</th>
                 </tr>
             </thead>
@@ -37,11 +37,11 @@
             <tr>
                 <td>{{item[2]}} </td>
                 <td>{{item[1]}}<br>{{item[3]}}<br>{{item[5]}} </td>
-                <td><textarea value = "" name = {{item[0]}}_{{sel_project_id}}_ResDescription cols="30" rows="3"></textarea> </td>
+                <td><textarea value = "" name = {{item[0]}}_{{sel_project_id}}_ResDescription cols="25" rows="3"></textarea> </td>
                 <td><input type="text" value = "" name = {{item[0]}}_{{sel_project_id}}_ConfigInfo style="width:100px"/> </td>
                 <td><input type="text" value = "" name = {{item[0]}}_{{sel_project_id}}_Tester style="width:100px"/> </td>
-                <td><input type="text" value = "" name = {{item[0]}}_{{sel_project_id}}_Date style="width:100px"/> </td>
-                <td><input type="text" value = "" name = {{item[0]}}_{{sel_project_id}}_PassFail style="width:100px"/> </td>
+                <td><input type="date" value = "" name = {{item[0]}}_{{sel_project_id}}_Date style="width:150px"/> </td>
+                <td><input type="text" value = "" name = {{item[0]}}_{{sel_project_id}}_PassFail style="width:90px"/> </td>
 
             </tr>
 
@@ -64,24 +64,24 @@
             'copy',
             {
             extend :'csv',
-            filename: 'Test Results'
+            filename: 'Test Results {{sel_project}}'
             },
             {
                 extend: 'excel',
-                filename: 'Test Results',
-                title: 'Test Results',
+                filename: 'Test Results {{sel_project}}',
+                title: 'Test Results {{sel_project}}',
                 messageTop: null,
                 
             },
             {
                 extend: 'pdf',
-                filename: 'Test Results',
-                title: 'Test Results',
+                filename: 'Test Results {{sel_project}}',
+                title: 'Test Results {{sel_project}}',
                 messageBottom: null
             },
             {
                 extend: 'print',
-                title: 'Test Results',
+                title: 'Test Results {{sel_project}}',
                 messageTop: null,
                 messageBottom: null
             }
