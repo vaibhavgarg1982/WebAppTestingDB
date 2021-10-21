@@ -1,4 +1,12 @@
-from flask import Flask, render_template, request, url_for, redirect, Response, send_from_directory
+from flask import (
+    Flask,
+    render_template,
+    request,
+    url_for,
+    redirect,
+    Response,
+    send_from_directory,
+)
 from flask_login import (
     LoginManager,
     login_user,
@@ -65,7 +73,10 @@ def login():
 @app.route("/undercon")
 @login_required
 def undercon():
-    return render_template("undercon.html")  # , current_user=current_user.id
+    return render_template(
+        "undercon.html",
+        msg="You should not see this page. Select an option from the left menu bar",
+    )  # , current_user=current_user.id
     # )  #'Logged in as: ' + current_user.id
 
 
@@ -88,7 +99,7 @@ def projects():
         if len(name) > 0 and len(description) > 0:
             # get list of all project names
             proj_names = [row[0] for row in c.execute("SELECT name FROM Mst_projects")]
-            print(proj_names)
+            # print(proj_names)
             if name not in proj_names:
                 c.execute(
                     "INSERT INTO Mst_projects (name, description) VALUES(:name, :description)",
@@ -97,7 +108,10 @@ def projects():
                 conn.commit()
             else:
                 conn.close()
-                return render_template("undercon.html", msg = "Project Name already exists, press back and try again")
+                return render_template(
+                    "undercon.html",
+                    msg="Project Name already exists, press back and try again",
+                )
                 # return "Project already exists, press back to return to the projects page and retry"
         else:
             conn.close()
@@ -132,23 +146,37 @@ def testcases():
             and len(expected_result) > 0
             and len(automated) > 0
         ):
-            c.execute(
-                "INSERT INTO Mst_testcases (name, test_category, description, steps, expected_result, automated) VALUES(:name, :test_category, :description, :steps, :expected_result, :automated)",
-                {
-                    "name": name,
-                    "test_category": test_category,
-                    "description": description,
-                    "steps": steps,
-                    "expected_result": expected_result,
-                    "automated": automated,
-                },
-            )
-            conn.commit()
+            # get list of all testcase names
+            testcase_names = [
+                row[0] for row in c.execute("SELECT name FROM Mst_testcases")
+            ]
+            # print(testcase_names)
+            if name not in testcase_names:
+                c.execute(
+                    "INSERT INTO Mst_testcases (name, test_category, description, steps, expected_result, automated) VALUES(:name, :test_category, :description, :steps, :expected_result, :automated)",
+                    {
+                        "name": name,
+                        "test_category": test_category,
+                        "description": description,
+                        "steps": steps,
+                        "expected_result": expected_result,
+                        "automated": automated,
+                    },
+                )
+                conn.commit()
+            else:
+                conn.close()
+                return render_template(
+                    "undercon.html",
+                    msg="Testcase Name already exists, press back and try again",
+                )
+                # return "Testcase already exists, press back to return to the testcases page and retry"
         else:
             conn.close()
-            return render_template("undercon.html", 
-                msg = "Testcase name, test category, description, steps, expected result or automated cannot be empty"
-                )
+            return render_template(
+                "undercon.html",
+                msg="Testcase name, test category, description, steps, expected result or automated cannot be empty",
+            )
             # return "Testcase name, test category, description, steps, expected result or automated cannot be empty"
         pass
 
@@ -433,9 +461,15 @@ def logout():
 def unauthorized_handler():
     return "Unauthorized"
 
+
 @app.route("/favicon.ico")
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, "static"), "favicon.ico", mimetype="image/vnd.microsoft.icon")
+    return send_from_directory(
+        os.path.join(app.root_path, "static"),
+        "favicon.ico",
+        mimetype="image/vnd.microsoft.icon",
+    )
+
 
 def create_tables():
     """create a new database if the database doesn't already exist
