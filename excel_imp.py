@@ -20,7 +20,7 @@ conn = sqlite3.connect("testing.db")
 # enforce foreign key rules
 conn.execute("PRAGMA foreign_keys = 1")
 c = conn.cursor()
-# read excel file, forst row is the header
+# read excel file, first row is the header
 df = pd.read_excel("testcases.xlsx", header=1)
 df.drop(df.columns[0], axis=1, inplace=True)
 df.to_sql("Mst_testcases", conn, if_exists="append", index=False)
