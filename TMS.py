@@ -6,6 +6,7 @@ from flask import (
     redirect,
     Response,
     send_from_directory,
+    abort
 )
 from flask_login import (
     LoginManager,
@@ -459,7 +460,8 @@ def logout():
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
-    return "Unauthorized"
+    abort(401)
+    # return "Unauthorized"
 
 
 @app.route("/favicon.ico")
