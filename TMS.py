@@ -6,7 +6,7 @@ from flask import (
     redirect,
     Response,
     send_from_directory,
-    abort
+    abort,
 )
 from flask_login import (
     LoginManager,
@@ -21,6 +21,8 @@ import os
 import json
 
 import sqlite3
+import datetime
+
 
 app = Flask(__name__)
 app.secret_key = "d9b98d29c818ee2e82b3b608c0d72257"
@@ -102,9 +104,15 @@ def projects():
             proj_names = [row[0] for row in c.execute("SELECT name FROM Mst_projects")]
             # print(proj_names)
             if name not in proj_names:
+                now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 c.execute(
-                    "INSERT INTO Mst_projects (name, description) VALUES(:name, :description)",
-                    {"name": name, "description": description},
+                    "INSERT INTO Mst_projects (name, description, dateC, userName) VALUES(:name, :description, :dateC, :userName)",
+                    {
+                        "name": name,
+                        "description": description,
+                        "dateC": now,
+                        "userName": current_user.id,
+                    },
                 )
                 conn.commit()
             else:
@@ -154,7 +162,7 @@ def testcases():
             # print(testcase_names)
             if name not in testcase_names:
                 c.execute(
-                    "INSERT INTO Mst_testcases (name, test_category, description, steps, expected_result, automated) VALUES(:name, :test_category, :description, :steps, :expected_result, :automated)",
+                    "INSERT INTO Mst_testcases (name, test_category, description, steps, expected_result, automated, dateC, userName) VALUES(:name, :test_category, :description, :steps, :expected_result, :automated, :dateC, :userName)",
                     {
                         "name": name,
                         "test_category": test_category,
@@ -162,6 +170,8 @@ def testcases():
                         "steps": steps,
                         "expected_result": expected_result,
                         "automated": automated,
+                        "dateC": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        "userName": current_user.id,
                     },
                 )
                 conn.commit()
@@ -237,8 +247,13 @@ def map_tc_to_projects():
         # insert project_id and each testcase_id into the Mapping table
         for test_id in test_ids:
             c.execute(
-                "INSERT OR IGNORE INTO Mapping (project_id, testcase_id) VALUES(:project_id, :test_id)",
-                {"project_id": project_id, "test_id": test_id},
+                "INSERT OR IGNORE INTO Mapping (project_id, testcase_id, dateC, userName) VALUES(:project_id, :test_id, :dateC, :userName)",
+                {
+                    "project_id": project_id,
+                    "test_id": test_id,
+                    "dateC": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "userName": current_user.id,
+                },
             )
         conn.commit()
         conn.close()
@@ -498,14 +513,18 @@ def create_tables():
                 description TEXT,
                 steps TEXT,
                 expected_result TEXT,
-                automated TEXT )"""
+                automated TEXT,
+                dateC Text,
+                userName Text )"""
     )
 
     c.execute(
         """CREATE TABLE IF NOT EXISTS Mst_projects (
                 project_id INTEGER PRIMARY KEY,
                 name TEXT,
-                description TEXT )"""
+                description TEXT,
+                dateC Text,
+                userName Text  )"""
     )
 
     c.execute(
@@ -513,7 +532,10 @@ def create_tables():
                 map_id INTEGER PRIMARY KEY,
                 project_id INTEGER,
                 testcase_id INTEGER,
-                FOREIGN KEY(project_id) REFERENCES Mst_projects(project_id),
+                dateC Text,
+                userName Text, 
+                FOREIGN KEY(project_id) REFERENCES Mst_projects(project_id) 
+                ON DELETE CASCADE,
                 FOREIGN KEY(testcase_id) REFERENCES Mst_testcases(testcase_id)
                 ON DELETE CASCADE )"""
     )
