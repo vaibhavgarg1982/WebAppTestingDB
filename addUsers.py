@@ -6,6 +6,7 @@ table - users (username, hash)
 
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
+from getpass import getpass
 
 # Connect to the database
 conn = sqlite3.connect('testing.db')
@@ -17,14 +18,19 @@ def check_password(password):
     hashed_password = c.fetchone()
     return check_password_hash(hashed_password[0], password)
 
-admin = input("Enter admin password: ")
+admin = getpass("Enter admin password: ")
 if not check_password(admin):
     print("Incorrect password. You are not authorised to add/change users")
     conn.close()
     exit()
 
 username = input("Enter username (email address): ")
-password = input("Enter password: ")
+password = getpass("Enter password: ")
+confirm_password = getpass("Confirm password: ")
+while password != confirm_password:
+    print("Passwords do not match. Please try again")
+    password = getpass("Enter password: ")
+    confirm_password = getpass("Confirm password: ")
 
 h = generate_password_hash(password)
 
