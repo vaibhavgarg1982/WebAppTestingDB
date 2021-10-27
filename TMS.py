@@ -17,6 +17,8 @@ from flask_login import (
     UserMixin,
 )
 
+from werkzeug.security import generate_password_hash, check_password_hash
+
 import os
 import json
 
@@ -37,40 +39,62 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def user_loader(email):
-    users = json.load(open("unpw.json"))
-    if email not in users:
-        return
+    # get the user from the database
+    conn = sqlite3.connect("testing.db")
+    c = conn.cursor()
+    c.execute(
+        "SELECT * FROM users WHERE username=?", (email,),
+    )
+    user = c.fetchone()
+    conn.close()
+    if user:
+        user = User()
+        user.id = email
+        return user
+    return None
 
-    user = User()
-    user.id = email
-    return user
 
 
 @login_manager.request_loader
 def request_loader(request):
     email = request.form.get("email")
-    users = json.load(open("unpw.json"))
-    if email not in users:
-        return
-
-    user = User()
-    user.id = email
-    return user
+    conn = sqlite3.connect("testing.db")
+    c = conn.cursor()
+    c.execute(
+        "SELECT * FROM users WHERE username=?", (email,),
+    )
+    user = c.fetchone()
+    conn.close()
+    if user:
+        user = User()
+        user.id = email
+        return user
+    return None
 
 
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
         return render_template("login.html")
-    users = json.load(open("unpw.json"))
+    # get users from database, user table (username, hash))
+    # username is the same as email    
     email = request.form["email"]
-    if email in users and users[email]["password"] == request.form["password"]:
-        user = User()
-        user.id = email
-        login_user(user)
-        return render_template("about.html")  # redirect(url_for("projects"))
+    password = request.form["password"]
+    conn = sqlite3.connect("testing.db")
+    c = conn.cursor()
+    c.execute(
+        "SELECT * FROM users WHERE username=?", (email,),
+    )
+    user = c.fetchone()
+    conn.close()
+    if user:
+        if check_password_hash(user[1], password):
+            user = User()
+            user.id = email
+            login_user(user)
+            return render_template("about.html")  # redirect(url_for("projects"))
 
-    return "Bad login"
+    return abort(401)
 
 
 @app.route("/undercon")
@@ -497,6 +521,7 @@ def create_tables():
     3. Mapping (map_id, project_id, testcase_id)
     4. testresults(tr_id, map_id, result_description, config_info, tester, execution_date, pass_fail)
     ON DELETE CASCADE (To delete all values recursively when a primary key is deleted)
+    5. users (username, hash)
     """
 
     conn = sqlite3.connect("testing.db")
@@ -557,6 +582,11 @@ def create_tables():
         """CREATE UNIQUE INDEX IF NOT EXISTS unique_mapping_index
                 ON Mapping(project_id, testcase_id)"""
     )
+
+    c.execute(""" CREATE TABLE IF NOT EXISTS users (
+            username TEXT PRIMARY KEY,
+            hash TEXT )""")
+    
     conn.close()
 
 
