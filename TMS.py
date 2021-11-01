@@ -43,7 +43,8 @@ def user_loader(email):
     conn = sqlite3.connect("testing.db")
     c = conn.cursor()
     c.execute(
-        "SELECT * FROM users WHERE username=?", (email,),
+        "SELECT * FROM users WHERE username=?",
+        (email,),
     )
     user = c.fetchone()
     conn.close()
@@ -54,14 +55,14 @@ def user_loader(email):
     return None
 
 
-
 @login_manager.request_loader
 def request_loader(request):
     email = request.form.get("email")
     conn = sqlite3.connect("testing.db")
     c = conn.cursor()
     c.execute(
-        "SELECT * FROM users WHERE username=?", (email,),
+        "SELECT * FROM users WHERE username=?",
+        (email,),
     )
     user = c.fetchone()
     conn.close()
@@ -77,13 +78,14 @@ def login():
     if request.method == "GET":
         return render_template("login.html")
     # get users from database, user table (username, hash))
-    # username is the same as email    
+    # username is the same as email
     email = request.form["email"]
     password = request.form["password"]
     conn = sqlite3.connect("testing.db")
     c = conn.cursor()
     c.execute(
-        "SELECT * FROM users WHERE username=?", (email,),
+        "SELECT * FROM users WHERE username=?",
+        (email,),
     )
     user = c.fetchone()
     conn.close()
@@ -583,10 +585,12 @@ def create_tables():
                 ON Mapping(project_id, testcase_id)"""
     )
 
-    c.execute(""" CREATE TABLE IF NOT EXISTS users (
+    c.execute(
+        """ CREATE TABLE IF NOT EXISTS users (
             username TEXT PRIMARY KEY,
-            hash TEXT )""")
-    
+            hash TEXT )"""
+    )
+
     conn.close()
 
 
