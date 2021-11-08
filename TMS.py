@@ -94,7 +94,8 @@ def login():
             user = User()
             user.id = email
             login_user(user)
-            return render_template("about.html")  # redirect(url_for("projects"))
+            return redirect(url_for("about"))
+            # return render_template("about.html")  # redirect(url_for("projects"))
 
     return abort(401)
 
@@ -112,7 +113,37 @@ def undercon():
 @app.route("/about")
 @login_required
 def about():
-    return render_template("about.html")  # , current_user=current_user.id
+    conn = sqlite3.connect("testing.db")
+    c = conn.cursor()
+    # number of projects
+    query = "SELECT COUNT(*) FROM Mst_projects"
+    c.execute(query)
+    num_projects = c.fetchone()[0]
+
+    # number of testcases
+    query = "SELECT COUNT(*) FROM Mst_testcases"
+    c.execute(query)
+    num_testcases = c.fetchone()[0]
+
+    # number of users
+    query = "SELECT COUNT(*) FROM users"
+    c.execute(query)
+    num_users = c.fetchone()[0]
+
+    # number of testresults
+    query = "SELECT COUNT(*) FROM testresults"
+    c.execute(query)
+    num_testresults = c.fetchone()[0]
+
+    conn.close()
+    return render_template(
+        "about.html",
+        num_projects=num_projects,
+        num_testcases=num_testcases,
+        num_users=num_users,
+        num_testresults=num_testresults,
+    )
+    # , current_user=current_user.id
     # )  #'Logged in as: ' + current_user.id
 
 
@@ -435,7 +466,7 @@ def sql_data_to_list_of_dicts(path_to_db, select_query):
 def downloadall():
     tr = sql_data_to_list_of_dicts(
         "testing.db",
-        "SELECT Mst_projects.*, Mst_testcases.*, testresults.* FROM mapping JOIN Mst_projects ON mapping.project_id = Mst_projects.project_id JOIN Mst_testcases ON mapping.testcase_id = Mst_testcases.testcase_id JOIN testresults ON mapping.map_id = testresults.map_id",
+        "SELECT Mst_projects.*, Mst_testcases.*, testresults.*, Mst_testcases.name as tc_name FROM mapping JOIN Mst_projects ON mapping.project_id = Mst_projects.project_id JOIN Mst_testcases ON mapping.testcase_id = Mst_testcases.testcase_id JOIN testresults ON mapping.map_id = testresults.map_id",
     )
 
     mapp = sql_data_to_list_of_dicts(
@@ -457,6 +488,27 @@ def downloadall():
         json.dumps(all_data, indent=4),
         mimetype="application/json",
         headers={"Content-Disposition": "attachment;filename=all_data.json"},
+    )
+
+
+@app.route("/downloadResults")
+@login_required
+def download_tr():
+    """
+    download the test results as a csv file
+    """
+    tr = sql_data_to_list_of_dicts(
+        "testing.db",
+        "SELECT Mst_projects.*, Mst_testcases.*, testresults.*, Mst_testcases.name as tc_name FROM mapping JOIN Mst_projects ON mapping.project_id = Mst_projects.project_id JOIN Mst_testcases ON mapping.testcase_id = Mst_testcases.testcase_id JOIN testresults ON mapping.map_id = testresults.map_id",
+    )
+    import pandas as pd
+
+    df = pd.DataFrame(tr).to_csv(index=False)
+
+    return Response(
+        df,
+        mimetype="application/csv",
+        headers={"Content-Disposition": "attachment;filename=testresults.csv"},
     )
 
 
