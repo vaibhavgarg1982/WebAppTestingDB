@@ -10,7 +10,7 @@
 '''
 
 # import data from excel file to Mst_testcases table. Excel file has the columns: 
-# name, test_category, description, steps, expected_result, automated
+# name, test_category, description, steps, expected_result, automated, dateC, userName
 # the data needs to be appended to existing data.
 # respect the primary key constraint. Primary key is testcase_id. auto increment.
 
