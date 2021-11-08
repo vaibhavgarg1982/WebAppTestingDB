@@ -1,26 +1,79 @@
 {%extends "layout.html" %}
 {% block content %}
-    <h1> Test Management System </h1>
-    <!-- alpha 1 release -->
-    <h4> Alpha 1 Release </h4>
-    <p>
-        This is a test management system for Genus. 
-        This enables the user to create and edit tests and map them to specific projects. <br> <br>
-        <small> Please note that this is an alpha release. <br> 
-            <ul>
-                <li>Any loss of data or productivity can occur.</li>
-                <li>Please maintain a backup of your data. </li> 
-                <li>Please use this system with caution.</li>
-                <li>Some parts of the software are incomplete and may be implemented soon.</li>
-            </ul>
-        </small>
-    </p>
-    <!-- insert image static\test-case-management-flow.png from static folder-->
-    <!-- centered -->
-    <img src="static/test-case-management-flow.png" alt="Test Management Flow" style="width:40%">
-    <!-- copyright -->
-    <p class="copyright">
-        &copy; 2021-22 <a href="http://www.genus.in">Genus</a>. All rights reserved.<br>
-        Please contact Mr. Navneet Tripathi for any queries, or reports of bugs.
-    </p>
+<h1> Test Management System </h1>
+<br>
+<!-- alpha 1 release -->
+
+<style>
+  .card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    width: 80%;
+    padding-top: 2em;
+    padding-bottom: 2em;
+  }
+
+  .card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .container {
+    margin: auto;
+    text-align: center;
+  }
+</style>
+
+
+
+<div class="card">
+  <!-- <img src="img_avatar.png" alt="Avatar" style="width:100%"> -->
+  <div class="container">
+
+    <h3>{{num_projects}} Projects</h3>
+  </div>
+</div>
+
+<div class="card">
+  <!-- <img src="img_avatar.png" alt="Avatar" style="width:100%"> -->
+  <div class="container">
+    <h3>{{num_testcases}} Testcases</h3>
+  </div>
+</div>
+
+<div class="card">
+  <!-- <img src="img_avatar.png" alt="Avatar" style="width:100%"> -->
+  <div class="container">
+    <h3>{{num_testresults}} Test Results</h3>
+  </div>
+</div>
+
+<div class="card">
+  <!-- <img src="img_avatar.png" alt="Avatar" style="width:100%"> -->
+  <div class="container">
+    <h3>{{num_users}} Users</h3>
+  </div>
+</div>
+
+
+<br>
+
+<!-- insert image static\test-case-management-flow.png from static folder-->
+<!-- centered -->
+<img src="static/test-case-management-flow.png" alt="Test Management Flow" style="width:40%">
+
+<p>
+  <small> Please note that this is an alpha release. <br>
+    <ul>
+      <li>Any loss of data or productivity can occur.</li>
+      <li>Please maintain a backup of your data. </li>
+      <li>Please use this system with caution.</li>
+      <li>Some parts of the software may be incomplete.</li>
+    </ul>
+  </small>
+</p>
+<!-- copyright -->
+<p class="copyright">
+  &copy; 2021-22 <a href="http://www.genus.in">Genus</a>. All rights reserved.<br>
+  <small>Alpha 1 release</small>
+</p>
 {% endblock content %}
