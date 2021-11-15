@@ -20,10 +20,12 @@
 <!-- <h2>Selected Project: {{sel_project}}</h2> -->
 <h2>Select Testcases</h2>
 
+<input type="checkbox" id="chkSelAll" onclick="selectAll()">
+<label for="chkSelAll">Select All</label>
 <table id="table1" style="width: auto;" class="table table-striped">
     <thead>
         <tr>
-            <th style="width: 2%">&#9745</th>
+            <th style="width: 2%"></th>
             <th style="width: 4%">ID </th>
             <th style="width: 9%">Name</th>
             <th style="width: 25%">Description</th>
@@ -36,7 +38,7 @@
     {% for item in testcases%}
     <tr>
         <td><label class="checkbox">
-            <input type="checkbox" data-name="{{item[1]}}" data-id="{{ item[0] }}" onclick="onItemChecked(this)"/>
+            <input type="checkbox" class="chkItem" data-name="{{item[1]}}" data-id="{{ item[0] }}" onclick="onItemChecked(this)"/>
           </label>
         </td>
         <td>{{item[0]}} </td>
@@ -46,9 +48,7 @@
         <td>{{item[4]}} </td>
         <td>{{item[5]}} </td>
         <td>{{item[6]}} </td>
-
     </tr>
-
     {%endfor%}
 </table>
 <input type="submit" value="Add the selected testcases to the project" name="addsrc" /> <br><br>
@@ -56,13 +56,8 @@
 
 </div>
 </form>
-
-
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" crossorigin="anonymous"></script> -->
 <script type="text/javascript">
-
-
-
-
 
 $(document).ready(function () {
         $('#table1').DataTable({
@@ -126,5 +121,27 @@ $(document).ready(function () {
         $("#div_sel").append(h);
     }
         
+    function selectAll() {        
+        //check if header checkbox is selected or unselected
+        var chk = $("#chkSelAll").prop("checked");
+
+        // //if unselected
+        // if (chk == false) {
+        //     //uncheck all checkboxes
+        //     $('.chkItem').prop('checked', false);
+        //     //clear selection div
+        //     $("#div_sel").html("");
+        //     //return
+        //     return;
+        // }
+
+        if (chk == true){
+            $('.chkItem').each(function() {
+                $(this).prop("checked", true);
+                onItemChecked($(this));
+            });
+        }
+    }
+
 </script>
 {% endblock content %}

@@ -23,4 +23,9 @@ c = conn.cursor()
 # read excel file, first row is the header
 df = pd.read_excel("testcases.xlsx", header=1)
 df.drop(df.columns[0], axis=1, inplace=True)
+# add a column with current date in all rows
+df['dateC'] = pd.to_datetime('today').strftime('%Y-%m-%d %H:%M:%S')
+# add a column with current user in all rows
+df['userName'] = 'admin'
 df.to_sql("Mst_testcases", conn, if_exists="append", index=False)
+conn.close()
