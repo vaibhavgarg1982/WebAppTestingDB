@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+
+
+<body>
+
+    <h1> Add new user or change password</h1>
+    <h2> List of Users</h2>
+    <ul>
+        {% for username in usernames %}
+            <li> {{username}} </li>
+        {%endfor%}
+    </ul>
+    <form method="POST">
+		<table border=0 cellspacing=5px class="center">
+            <tr>
+                <td>Email:</td>
+                <td><input type=text name=email></td>
+            </tr>
+            <tr>
+                <td>Password:</td>
+                <td><input type=password name=password></td>
+            </tr>
+            <tr>
+                <td>Confirm Password:</td>
+                <td><input type=password name=confirm_password></td>
+            <tr>
+                <td colspan=2 align=center><input type=submit name=addUser value="Add or Modify User"></td>
+            </tr>
+        </table>
+    </form>
+<hr>
+<a href="/logout"> LOGOUT</a>
+</body>

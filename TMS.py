@@ -94,11 +94,43 @@ def login():
             user = User()
             user.id = email
             login_user(user)
+            if user.id == "admin":
+                return redirect(url_for("newuser"))
             return redirect(url_for("about"))
             # return render_template("about.html")  # redirect(url_for("projects"))
 
     return abort(401)
 
+@app.route("/newuser", methods=["GET", "POST"])
+@login_required
+def newuser():
+    if current_user.id != "admin":
+        return abort(401)
+    conn = sqlite3.connect("testing.db")
+    c = conn.cursor()
+    if request.method == "POST":
+        un = request.form["email"]
+        pw = request.form["password"]
+        conf_pw = request.form["confirm_password"]
+        if pw != conf_pw or len(pw) < 3:
+            return abort(401)
+        pw_hash = generate_password_hash(pw)
+        try:
+            c.execute("INSERT INTO users (username, hash) VALUES (?, ?)", (un, pw_hash))
+            conn.commit()
+            print("User added successfully")
+        except sqlite3.IntegrityError:
+            print("User already exists")
+            c.execute("UPDATE users SET hash = ? WHERE username = ?", (pw_hash, un))
+            conn.commit()
+            print("Password updated successfully")
+    
+    # get the list of user names from the users table
+    c.execute( "Select username from users")
+    usernames = [user[0] for user in c.fetchall()]
+    conn.close()
+    return render_template("newuser.html", usernames=usernames)
+    # pass
 
 @app.route("/undercon")
 @login_required
