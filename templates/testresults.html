@@ -24,7 +24,7 @@
         <table id="table1" style="width: auto;" class="table table-striped">
             <thead>
                 <tr>
-                    <th style="width: 5%">Category </th>
+                    <th style="width: 5%">(ID) Category </th>
                     <th style="width: 10%">Name<br>Description<br>Expected Result</th>
                     <th style="width: 20%">Result Description</th>
                     <th style="width: 10%">Config Info</th>
@@ -35,7 +35,7 @@
             </thead>
             {% for item in testcases%}
             <tr>
-                <td>{{item[2]}} </td>
+                <td>({{item[0]}}) <br> {{item[2]}} </td>
                 <td>{{item[1]}} <br>{{item[3]}} <br>{{item[5]}} </td>
                 <td><textarea value = "" name = {{item[0]}}_{{sel_project_id}}_ResDescription cols="25" rows="3"></textarea> </td>
                 <td><input type="text" value = "" name = {{item[0]}}_{{sel_project_id}}_ConfigInfo style="width:100px"/> </td>
