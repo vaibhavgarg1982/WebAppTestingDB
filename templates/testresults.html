@@ -20,7 +20,7 @@
 
         <h2>{{sel_project}}</h2>
         <!-- <h3>{{sel_project_id}}</h3> -->
-        <form method="post" action="">
+        <form id="frm1" method="post" action="">
         <table id="table1" style="width: auto;" class="table table-striped">
             <thead>
                 <tr>
@@ -49,8 +49,8 @@
         </table>
         <br>
         <hr>
-
-            <input type="submit" value="Add Test Results" name="addsrc" />
+        <input type="hidden" value="Add Test Results" name="addsrc" />
+        <input id="btn1" type="submit" value="Add Test Results" />
    
 
         </form>
@@ -58,6 +58,10 @@
         <script type="text/javascript">
         
             $(document).ready(function() {
+                $("#frm1").submit(function(e) {
+                    //e.preventDefault();
+                    $("#btn1").attr("disabled", true);
+                });
                 $('#table1').DataTable( {
             dom: 'lBfrtip',
             buttons: [
